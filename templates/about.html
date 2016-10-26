@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+      <p>This is a voting website for {{ config.ORGANIZATION_NAME }}.</p>
+      <p>If you are eligible to vote in this election, you will receive a message via email.</p>
+      <p>Click <a href="/contact">here</a> to contact the owner of this site for help.</p>
+    </div>
+</div>
+{% endblock %}

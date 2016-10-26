@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Contact{% endblock %}
+{% block content %}
+<form class="form-horizontal" method="POST" action="">
+
+<fieldset>
+{{ form.hidden_tag() }}
+
+<legend>Contact Us</legend>
+{% include "formerror.html" %}
+<div class="form-group">
+  <label class="col-md-4 control-label" for="email">Email Address</label>
+  <div class="col-md-4">
+  {{ form.email(placeholder="email@domain.com", class="form-control input-md", required="") }}
+
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-md-4 control-label" for="subject">Subject</label>
+  <div class="col-md-4">
+    {{ form.subject(class="form=control") }}
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-md-4 control-label" for="message">Message</label>
+  <div class="col-md-4">
+    {{ form.message(class="form-control") }}
+  </div>
+</div>
+
+<div class="form-group">
+    <label class="col-md-4 control-label" for="recaptcha">Captcha</label>
+    <div class="col-md-4">
+        {{ form.recaptcha(class="col-md-4") }}
+    </div>
+</div>
+
+<div class="form-group">
+  <label class="col-md-4 control-label" for="send">Send Message</label>
+  <div class="col-md-4">
+    {{ form.submit(class="btn btn-primary") }}
+  </div>
+</div>
+
+</fieldset>
+</form>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+    <form action="" method="POST" name="login" class="form-horizontal">
+        {% include "formerror.html" %}
+        <fieldset>
+        {{ form.hidden_tag() }}
+         <div>
+        {% if failure == True %}
+            </br>
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error: </span>
+                <span class="help-inline">Invalid Token</span>
+            </div>
+        {% endif %}
+
+        <div class="form-group">
+        <label class="col-md-4 control-label" for="email">Email</label>
+         <div class="col-md-4">
+        {{ form.email(class="form-control input-md", placeholder="email@domain.com") }}
+        </div></div>
+
+        <div class="form-group">
+        <label class="col-md-4 control-label" for="password">Password</label>
+        <div class="col-md-4">
+        {{ form.password(class="form-control input-md") }}
+        </div></div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="recaptcha">Captcha</label>
+        <div class="col-md-4">
+        {{ form.recaptcha(class="col-md-4") }}
+        </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="submit">Login</label>
+        <div class="col-md-4">
+        {{ form.submit(class="btn btn-primary") }}
+        </div>
+        </div>
+        </fieldset>
+</form>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}User Profile{% endblock %}
+{% block content %}
+<div class="panel panel-default">
+  <div class="panel-body">
+    <p>Currently logged in as {{ admin.name }}</p>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">2 Factor Authentication</div>
+  <div class="panel-body">
+    {% if admin.otp_enabled %}
+        <p>2FA is currently <strong>enabled</strong>.</p>
+    {% else %}
+        <p>To turn on Two-Factor-Authentication, download Google Authenticator from the App Store, and then click <a href="/admin/otp">here</a>. 2FA is recommended as it makes your account more secure.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Results{%endblock%}
+{% block content %}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+        ['Candidate', 'Votes'],
+        {% for candidate in candidates %}
+
+        ['{{ candidate[0] }}', {{ candidate[1] }}],
+        {% endfor %}
+        ]);
+
+        var options = {
+            pieSliceText: 'value',
+            legend: {position: 'bottom'}
+        };
+
+        var chart_div = document.getElementById('chart_div');
+        var chart = new google.visualization.PieChart(chart_div);
+
+        google.visualization.events.addListener(chart, 'ready', function () {
+        chart_div.innerHTML = '<img type="image/png" src="' + chart.getImageURI() + '">';
+        console.log(chart_div.innerHTML);
+      });
+
+        chart.draw(data, options);
+    }
+</script>
+<h2>Vote Results</h2>
+<div id="chart_div"></div>
+<h2>Winners</h2>
+<ul>
+{% for winner in winners %}
+<li>{{ winner }}</li>
+{% endfor %}
+</ul>
+<h2>Option Totals</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Option Name</th>
+            <th>Total Votes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for candidate in candidates %}
+            <tr>
+                {% if candidate[0] in winners or candidate[0] + " (tie)" in winners %}
+                <td>{{ candidate[0] }} ★</td>
+                {% else %}
+                <td>{{ candidate[0] }}</td>
+                {% endif %}
+                <td>{{ candidate[1] }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p>★ = winner</p>
+<h2>All Votes</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Voter Email</th>
+            <th>Options Selected</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vote in votes %}
+            <tr>
+                <td>
+                    {% if config.EXPOSE_VOTER and not public %}
+                        {{ vote.user.email }}
+                    {% else %}
+                        {{ vote.user.obfuscated_email }}</td>
+                    {% endif %}
+                <td>
+                    {% for v in vote.votes %}
+                        {{ v.name }},
+                    {% endfor %}
+                </td>
+                <td>{{ vote.date }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<hr>
+<sup>{{ time }} by {{ user }}</sup>
+{% endblock %}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<!-- Template adapted from Bootstraps' "Dashboard" Template -->
+<!-- https://github.com/twbs/bootstrap/blob/master/docs/examples/dashboard/index.html -->
+<!-- Annoyingly enough, for this template to work you have to copy the Bootstraps version found on the website and can't use the CMS version -->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Admin Dashboard - {{ config.SITE_NAME }}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link type="text/css" href="/static/dashboard.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/manage_users.js"></script>
+    <!-- jquery confirm -->
+    <script type="text/javascript" src="/static/jquery-confirm.min.js"></script>
+    <link rel="stylesheet" href="/static/jquery-confirm.min.css" crossorigin="anonymous">
+</head>
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+<body>
+
+   {% include "manage_navbar.html" %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li><a href="/admin/dashboard">Overview <span class="sr-only">(current)</span></a></li>
+                    <li><a href="/admin/manage/votes">Manage Votes</a></li>
+                    <li><a href="/admin/export">Export Information</a></li>
+                    <li class="active"><a href="/admin/manage/users">Manage Users</a></li>
+                    <li><a href="/admin/manage/candidates">Manage Candidates</a></li>
+                    <li><a href="/admin/manage/admins">Manage Admins</a></li>
+                    <li><a href="/admin/log">Action Log</a></li>
+                    <li><a href="/admin/manage/settings">Site Settings</a></li>
+                </ul>
+
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <h1 class="page-header">User Dashboard</h1>
+                <h2 class="sub-header">Invite User</h2>
+                <form class="form-horizontal">
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="email">Email Address</label>
+                            <div class="col-md-4">
+                                <input id="email" name="email" type="text" placeholder="email@domain.com" class="form-control input-md" required="">
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="email-submit">Invite User</label>
+                            <div class="col-md-4">
+                                <input type="button" id="email-submit" name="email-submit" class="btn btn-primary" value="Invite">
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+                <h2 class="sub-header">Bulk Invite Users</h2>
+                <p>To bulk upload users, export contacts from a Google Contacts group and upload the file here.</p>
+                <form class="form-horizontal" id="upload-file" method="post" enctype="multipart/form-data">
+                    <fieldset>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="upload">Upload Contacts</label>
+                            <div class="col-md-4">
+                                <input id="file" name="file" class="input-file" type="file">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="upload-submit"></label>
+                            <div class="col-md-4">
+                                <input type="button" id="upload-submit" name="upload-submit" class="btn btn-primary" value="Submit">
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+
+
+                <h2 class="sub-header">Existing Users</h2>
+                <div class="table-responsive">
+                    <table id="usertable" name="usertable" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Email</th>
+                                <th>Token</th>
+                                <th>Has Voted Yet</th>
+                                <th>Account Locked</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.token }}</td>
+                                <td>
+                                    {% if user.vote.first() %} Yes {% else %} No {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.in_timeout %} Yes {% else %} No {% endif %}
+                                </td>
+                                <td>
+                                    {% if not user.in_timeout %}
+                                    <input type="button" value="disable" class="disable" name="disable" onClick="/api/lock_user?id={{user.id}}"> {% else %}
+                                    <input type="button" value="enable" class="enable" name="enable" onClick="/api/unlock_user?id={{user.id}}"> {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% include "notes.html" %}
+
+            </div>
+        </div>
+    </div>
+    <script src="/static/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Vote{% endblock %}
+{% block scripts %}
+<script>var limit = {{ limit }}</script>
+<script type="text/javascript" src="/static/vote.js"></script>
+
+{% endblock %}
+{% block content %}
+<!-- Form generated using http://bootsnipp.com/forms -->
+<div class="panel panel-default">
+  <div class="panel-heading">
+      <ul>
+          <li>Select {{ limit }} candidates.</li>
+          <li>Click "(more info)" to see information about a candidate.</li>
+          <li>If you have any questions or need additional help, feel free to <a href="/contact">contact us</a> for help</li>
+      </ul>
+
+  </div>
+<div class="panel-body">
+    <form class="form-horizontal">
+       <fieldset>
+          <div class="form-group">
+             <label class="col-md-4 control-label" for="options"></label>
+             <div class="col-md-4">
+                 {% for option in choices %}
+                <div class="checkbox">
+                   <label for={{ option.id }}>
+                   <input class="single-checkbox" type="checkbox" name="options" id={{ option.id }} value="{{ option.id }}">
+                   {{ option.name }}
+                   </label> <a href="#" class="description-a" id="desc-a-{{option.id}}">(show description)</a>
+                </div>
+                <input id="desc-{{ option.id }}" hidden="true" value="{{ option.description_html | safe }}">
+             {% endfor %}
+             </div>
+          </div>
+
+          <div class="form-group">
+             <label class="col-md-4 control-label" for="submit"></label>
+             <div class="col-md-4">
+                <input type="button" id="submit" name="submit" class="btn btn-primary" value="Submit">
+             </div>
+          </div>
+       </fieldset>
+    </form>
+</div>
+</div>
+{% endblock %}

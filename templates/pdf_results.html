@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Results{%endblock%}
+{% block content %}
+{% if alert %}
+<div class="alert alert-danger" role="alert">
+  <span class="sr-only">Error:</span>
+  <b>These results should not be considered final, given that the vote is still live.</b>
+</div>
+{% endif %}
+<h2>Winners</h2>
+<ul>
+{% for winner in winners %}
+<li>{{ winner }}</li>
+{% endfor %}
+</ul>
+<h2>Option Totals</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Option Name</th>
+            <th>Total Votes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for candidate in candidates %}
+            <tr>
+                {% if candidate[0] in winners or candidate[0] + " (tie)" in winners %}
+                <td>{{ candidate[0] }} ★</td>
+                {% else %}
+                <td>{{ candidate[0] }}</td>
+                {% endif %}
+                <td>{{ candidate[1] }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p>★ = winner</p>
+<h2>All Votes</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Voter Email</th>
+            <th>Options Selected</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vote in votes %}
+            <tr>
+                <td>
+                    {% if config.EXPOSE_VOTER and not public %}
+                        {{ vote.user.email }}
+                    {% else %}
+                        {{ vote.user.obfuscated_email }}</td>
+                    {% endif %}
+                <td>
+                    {% for v in vote.votes %}
+                        {{ v.name }},
+                    {% endfor %}
+                </td>
+                <td>{{ vote.date }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<hr>
+<sup>{{ time }} by {{ user }}</sup>
+{% endblock %}

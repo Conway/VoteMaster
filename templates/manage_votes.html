@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!-- Template adapted from Bootstraps' "Dashboard" Template -->
+<!-- https://github.com/twbs/bootstrap/blob/master/docs/examples/dashboard/index.html -->
+<!-- Annoyingly enough, for this template to work you have to copy the Bootstraps version found on the website and can't use the CMS version -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Admin Dashboard - {{ config.SITE_NAME }}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link type="text/css" href="/static/dashboard.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/manage_votes.js"></script>
+    <!-- jquery confirm -->
+    <script type="text/javascript" src="/static/jquery-confirm.min.js"></script>
+    <link rel="stylesheet" href="/static/jquery-confirm.min.css" crossorigin="anonymous">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+          <script type="text/javascript">
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+            function drawChart() {
+
+                var data = google.visualization.arrayToDataTable([
+                ['Candidate', 'Votes'],
+                {% for candidate in candidates %}
+
+                ['{{ candidate[0] }}', {{ candidate[1] }}],
+                {% endfor %}
+                ]);
+
+                var options = {
+                pieSliceText: 'value',
+                legend: {position: 'bottom'}
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+                chart.draw(data, options);
+            }
+          </script>
+  </head>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  <body>
+
+   {% include "manage_navbar.html" %}
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="/admin/dashboard">Overview <span class="sr-only">(current)</span></a></li>
+            <li class="active"><a href="/admin/manage/votes">Manage Votes</a></li>
+            <li><a href="/admin/export">Export Information</a></li>
+            <li><a href="/admin/manage/users">Manage Users</a></li>
+            <li><a href="/admin/manage/candidates">Manage Candidates</a></li>
+            <li><a href="/admin/manage/admins">Manage Admins</a></li>
+            <li><a href="/admin/log">Action Log</a></li>
+            <li><a href="/admin/manage/settings">Site Settings</a></li>
+          </ul>
+
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Voting Dashboard</h1>
+          <h2 class="sub-header">Quick Results</h2>
+          <p>See full results <a href="/results">here</a>.</p>
+
+          <div id="piechart" style="width: 900px; height: 500px;"></div>
+          <h2 class="sub-header">Manage Votes</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Owner</th>
+                  <th>Choices</th>
+                  <th>Date</th>
+                  <th>Vote Counting</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for vote in votes %}
+                <tr>
+                  <td>{{ vote.id }}</td>
+                  <td>{{ vote.user.email }}</td>
+                  <td>
+                  {% for v in vote.votes %}
+                  {{ v.name }},
+                  {% endfor %}
+                  </td>
+                  <td>{{ vote.date }}</td>
+                  <td>{{ vote.counting }}</td>
+                  <td>
+                  {% if vote.counting %}
+                      <input type="button" value="un-count vote" class="uncount" name="uncount" onclick="/api/disable_vote?id={{vote.id}}">
+                  {% else %}
+                      <input type="button" value="count vote" class="count" name="count" onclick="/api/enable_vote?id={{vote.id}}">
+                  {% endif %}
+                      </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% include "notes.html" %}
+
+        </div>
+      </div>
+    </div>
+    <script src="/static/bootstrap.min.js"></script>
+  </body>
+</html>
