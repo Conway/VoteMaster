@@ -15,9 +15,10 @@ import time
 
 app = Flask(__name__)
 db.init_app(app)
-sentry = Sentry(app, dsn='https://87b7beedd7034a77b502f66c6a37fecc:98baf4fea27b46b99780f0a91d97e23b@sentry.io/102677')
-
 app.config.from_object('config')
+sentry = Sentry(app, dsn=app.config['SENTRY_URL'])
+
+
 
 BASE_DIRECTORY = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = '{0}{1}'.format(
