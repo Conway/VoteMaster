@@ -6,6 +6,7 @@ END_DATE_STR = '' # date (as a string) that says when the vote ends
 DEBUG = False
 SECRET_KEY = 'ksdjafasdlkjh2lkj3h2asjdfhdsf' # CHANGEME BEFORE USING
 SECURITY_PASSWORD_SALT = 'jsafhasdjghduygi34hdsfagskf' # CHANGEME BEFORE USING
+SENTRY_URL = 'https://SENTRY.URL'
 
 MAX_CHOICES = 2  # the maximum number of choices a voter can choose
 EXPOSE_VOTER = True  # allows admins to see all available info about a user on results page
